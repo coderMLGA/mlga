@@ -10,6 +10,7 @@ import { Header } from "./components/header/header";
 export default function App() {
   return (
     <Router
+      base="/mlga/"
       root={(props) => (
         <div class="flex h-full flex-col">
           <Header />
