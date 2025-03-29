@@ -1,5 +1,5 @@
 import { useParams } from "@solidjs/router";
-import { createResource, Show, For, createSignal } from "solid-js";
+import { createResource, For, createSignal } from "solid-js";
 import { A } from "@solidjs/router";
 import { fetchStreamById } from "~/api/streams";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
@@ -12,64 +12,74 @@ export default function StreamViewPage() {
   const [isCollapsed, setIsCollapsed] = createSignal(false);
 
   return (
-    <div class="container mx-auto h-full max-w-screen-2xl px-4 py-8">
-      <div class="flex h-full grid-cols-1 flex-col gap-3 sm:grid sm:grid-cols-3">
+    <div class="container mx-auto h-full px-4 py-8">
+      <div class="flex h-full grid-cols-1 flex-col gap-3 md:grid md:grid-cols-3">
         {/* Основной контент */}
-        <div class={`col-span-2 w-full space-y-8 transition-all duration-300`}>
+        <div
+          class={`relative col-span-2 w-full space-y-3 overflow-hidden transition-all duration-300`}
+        >
           {/* Видео-плеер */}
-          <div class="relative aspect-video w-full overflow-hidden rounded-2xl shadow-xl">
+          <div class="aspect-video w-full overflow-hidden rounded-2xl">
             <img
               src={stream()?.thumbnail}
               alt={stream()?.title}
               class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
             />
-            <div class="absolute bottom-4 left-4 rounded-full bg-red-500/90 px-4 py-2 text-sm font-bold text-white backdrop-blur-sm">
-              {stream()?.viewers.toLocaleString()} зрителей онлайн
-            </div>
           </div>
 
           {/* Collapse toggle button */}
-          <button
-            onClick={() => setIsCollapsed(!isCollapsed())}
-            class="flex w-full items-center justify-center rounded-lg bg-gray-100 p-2 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600"
-          >
-            {isCollapsed() ? (
-              <span class="text-sm font-medium">Развернуть информацию</span>
-            ) : (
-              <span class="text-sm font-medium">Свернуть информацию</span>
-            )}
-          </button>
-
+          <div class="flex justify-between">
+            <Badge variant={"error"}>
+              {stream()?.viewers.toLocaleString()} зрителей онлайн
+            </Badge>
+            <Button
+              onClick={() => setIsCollapsed(!isCollapsed())}
+              variant={"secondary"}
+              class="min-w-[200px]"
+            >
+              {isCollapsed() ? (
+                <span class="text-sm font-medium">Свернуть информацию</span>
+              ) : (
+                <span class="text-sm font-medium">Развернуть информацию</span>
+              )}
+            </Button>
+          </div>
           {/* Информация о стриме - only shown when not collapsed */}
-          <Show when={!isCollapsed()}>
-            <div class="space-y-3 rounded-2xl bg-white p-6 shadow-lg dark:bg-gray-800/70">
-              <h1 class="text-primary text-4xl font-black">
+          <div class="flex justify-center">
+            <div
+              class={`absolute top-0 w-[calc(100%-1rem)] space-y-2 rounded-xl bg-white p-4 shadow-lg transition-transform duration-300 ease-in-out sm:w-[calc(100%-2rem)] sm:space-y-3 sm:rounded-2xl sm:p-6 dark:bg-gray-800/70 ${
+                isCollapsed()
+                  ? "translate-y-[10px] sm:translate-y-[15px]"
+                  : "-translate-y-full"
+              } max-h-[250px] overflow-y-scroll`}
+            >
+              <h1 class="text-primary text-base font-black sm:text-xl md:text-2xl">
                 {stream()?.title}
               </h1>
 
               <A
-                class="group flex items-center space-x-4"
+                class="group flex items-center space-x-2 sm:space-x-4"
                 href={`/profile/${stream()?.id}`}
               >
-                <Avatar class="h-14 w-14 border-2 border-white shadow-md">
+                <Avatar class="h-10 w-10 border-2 border-white shadow-md sm:h-12 sm:w-12 md:h-14 md:w-14">
                   <AvatarImage src={stream()?.streamer.avatar} />
-                  <AvatarFallback class="bg-blue-500 text-white">
-                    {stream()?.streamer.name[0]}
-                  </AvatarFallback>
+                  <AvatarFallback>{stream()?.streamer.name[0]}</AvatarFallback>
                 </Avatar>
 
-                <p class="text-xl font-bold text-gray-900 group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400">
-                  {stream()?.streamer.name}
-                </p>
+                <p class="text-xs sm:text-base">{stream()?.streamer.name}</p>
               </A>
 
-              <div class="flex flex-wrap gap-2">
+              <div class="flex flex-wrap justify-end gap-1 sm:gap-2">
                 <For each={stream()?.tags}>
-                  {(tag) => <Badge variant="success">{tag}</Badge>}
+                  {(tag) => (
+                    <Badge variant="success" class="text-xs sm:text-sm">
+                      {tag}
+                    </Badge>
+                  )}
                 </For>
               </div>
             </div>
-          </Show>
+          </div>
         </div>
 
         {/* Боковая панель */}
