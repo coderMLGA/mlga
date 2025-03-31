@@ -1,0 +1,19 @@
+services:
+  app:
+    build:
+      context: .              # Build from the current directory (where Dockerfile is)
+      target: release         # Use the 'release' stage from your multi-stage Dockerfile
+      dockerfile: Dockerfile  # Explicitly specify the Dockerfile (optional if named 'Dockerfile')
+    ports:
+      - "3000:3000"           # Map host port 3000 to container port 3000
+    environment:
+      - NODE_ENV=production   # Set production environment
+      - SERVER_PRESET=bun     # Preset for Bun server
+    user: bun                 # Run as the 'bun' user, matching the Dockerfile
+    restart: unless-stopped   # Restart unless explicitly stopped
+    networks:
+      - app-network          # Define a custom network (optional)
+
+networks:
+  app-network:
+    driver: bridge
