@@ -9,7 +9,7 @@ export default function Home() {
           <span class="block first-letter:text-red-500">Again</span>
         </h1>
         <p class="text-muted-foreground mx-auto text-xs">
-          Когда тьма окутает мир, MLGA, как Феникс, восстанет из пепла… 🔥
+          Когда оригинал окутает тьма, MLGA восстанет из пепла… 🔥
         </p>
       </div>
     </>
